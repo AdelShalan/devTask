@@ -25,6 +25,9 @@ public class Employee {
         this.company = company;
     }
 	
+	public Employee() {
+    }
+	
 	public Company getCompany() {
 		return company;
 	}
