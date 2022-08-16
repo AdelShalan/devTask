@@ -1,53 +1,85 @@
 package com.dev.rest;
 
-import static org.junit.Assert.*;
-
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
+import org.mockito.Mockito;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.dev.rest.controller.companyController;
 import com.dev.rest.model.Company;
 import com.dev.rest.model.Employee;
 import com.dev.rest.services.companyService;
 import com.dev.rest.services.employeeService;
 
-public class companyControllerUnitTest extends RestApplicationTests {
-	private employeeService empService;
-	private companyService service;
+public class CompanyControllerUnitTest {
+	private employeeService empService = Mockito.mock(employeeService.class, Mockito.RETURNS_DEEP_STUBS);
+	private companyService service = Mockito.mock(companyService.class, Mockito.RETURNS_DEEP_STUBS);
+	private String requestString;
+	private MockMvc mockMvc;
 
 	@Before
 	public void setUp() throws Exception {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-		companyController controller = new companyController(empService, service);
-		
-		Company c = new Company();
+		this.mockMvc = MockMvcBuilders.standaloneSetup(new companyController(service)).build();
+	}
 
+	@Test
+	public void testAddCompany() throws Exception {
+		JSONArray empJson = new JSONArray();
+		JSONObject o = new JSONObject();
+		Company c = new Company();
+		Employee e = new Employee();
+
+		// create json object of employee and to json array
+		o.put("id", 1);
+		o.put("name", "Jacky");
+		o.put("age", 22);
+		empJson.put(o);
+		// create another json object of employee and to json array
+		o = new JSONObject();
+		o.put("id", 3);
+		o.put("name", "John");
+		o.put("age", 33);
+		empJson.put(o);
+
+		requestString = new JSONObject().put("company name", "").put("employees", empJson).toString();
+
+		Mockito.when(empService.addEmployee(e)).thenReturn(true);
+		Mockito.when(service.addCompany(c)).thenReturn(true);
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/addCompany").contentType(MediaType.APPLICATION_JSON)
+				.content(requestString)).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void testGetCompany() throws Exception {
+		// create a company
+		Company c = new Company();
+		c.setId(2);
+		c.setName("company x");
+		// create first employee and add to company employees
 		Employee e = new Employee(c);
+		e.setId(1);
 		e.setAge(22);
 		e.setName("Jacky");
 		c.getEmployees().add(e);
-
+		// create second employee and add to company employees
 		e = new Employee(c);
+		e.setId(3);
 		e.setAge(36);
 		e.setName("Adel");
 		c.getEmployees().add(e);
+		// mock the DA service
+		Mockito.when(service.getCompany(2)).thenReturn(c);
+		// mpck a get request
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/getCompany").param("companyId", "2"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(
+						"Company [id=2, name=company x, employees=[Employee [id=1, name=Jacky, age=22], Employee [id=3, name=Adel, age=36]]]"));
 
-		c.setId(3);
-		c.setName("company x");
-	}
-
-	@Test
-	public void testAddCompany() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetCompany() {
-		fail("Not yet implemented");
+		// fail("Not yet implemented");
 	}
 
 }

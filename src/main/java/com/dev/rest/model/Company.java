@@ -2,7 +2,6 @@ package com.dev.rest.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +13,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Company {
-	@Id @GeneratedValue
+
+	@Id
+	@GeneratedValue
 	private int id;
 	@Column
 	private String name;
@@ -22,7 +23,10 @@ public class Company {
 	@JsonManagedReference
 	private Collection<Employee> employees = new ArrayList<>();
 
-	
+	public Company() {
+
+	}
+
 	public Collection<Employee> getEmployees() {
 		return employees;
 	}
@@ -30,7 +34,7 @@ public class Company {
 	public void setEmployees(Collection<Employee> employees) {
 		this.employees = employees;
 	}
-	
+
 	public long getId() {
 		return id;
 	}
@@ -38,7 +42,7 @@ public class Company {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -46,6 +50,9 @@ public class Company {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 
+	@Override
+	public String toString() {
+		return "Company [id=" + id + ", name=" + name + ", employees=" + employees + "]";
+	}
 }

@@ -6,12 +6,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class Employee {
-	@Id @GeneratedValue
+	@Id
+	@GeneratedValue
 	private int id;
 	@Column
 	private String name;
@@ -20,14 +21,15 @@ public class Employee {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JsonBackReference
 	private Company company;
-	
+
+	@Autowired
 	public Employee(Company company) {
-        this.company = company;
-    }
-	
+		this.company = company;
+	}
+
 	public Employee() {
-    }
-	
+	}
+
 	public Company getCompany() {
 		return company;
 	}
@@ -43,7 +45,7 @@ public class Employee {
 	public void setAge(int age) {
 		this.age = age;
 	}
-	
+
 	public long getId() {
 		return id;
 	}
@@ -51,13 +53,18 @@ public class Employee {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [id=" + id + ", name=" + name + ", age=" + age + "]";
 	}
 
 }
