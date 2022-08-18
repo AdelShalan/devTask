@@ -13,12 +13,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.dev.rest.controller.companyController;
 import com.dev.rest.model.Company;
 import com.dev.rest.model.Employee;
-import com.dev.rest.services.companyService;
-import com.dev.rest.services.employeeService;
+import com.dev.rest.services.AddGetCompanyService;
+import com.dev.rest.services.AddEmployeeService;
 
 public class CompanyControllerUnitTest {
-	private employeeService empService = Mockito.mock(employeeService.class, Mockito.RETURNS_DEEP_STUBS);
-	private companyService service = Mockito.mock(companyService.class, Mockito.RETURNS_DEEP_STUBS);
+	private AddEmployeeService empService = Mockito.mock(AddEmployeeService.class, Mockito.RETURNS_DEEP_STUBS);
+	private AddGetCompanyService service = Mockito.mock(AddGetCompanyService.class, Mockito.RETURNS_DEEP_STUBS);
 	private String requestString;
 	private MockMvc mockMvc;
 
