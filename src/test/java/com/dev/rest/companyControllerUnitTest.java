@@ -48,8 +48,8 @@ public class CompanyControllerUnitTest {
 
 		requestString = new JSONObject().put("company name", "").put("employees", empJson).toString();
 
-		Mockito.when(empService.addEmployee(e)).thenReturn(true);
-		Mockito.when(service.addCompany(c)).thenReturn(true);
+		Mockito.when(empService.saveEmployeeToDB(e)).thenReturn(true);
+		Mockito.when(service.saveCompanyToDB(c)).thenReturn(true);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/addCompany").contentType(MediaType.APPLICATION_JSON)
 				.content(requestString)).andExpect(MockMvcResultMatchers.status().isOk());
 	}
@@ -73,7 +73,7 @@ public class CompanyControllerUnitTest {
 		e.setName("Adel");
 		c.getEmployees().add(e);
 		// mock the DA service
-		Mockito.when(service.getCompany(2)).thenReturn(c);
+		Mockito.when(service.getCompanyById(2)).thenReturn(c);
 		// mpck a get request
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/getCompany").param("companyId", "2"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(

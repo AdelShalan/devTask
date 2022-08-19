@@ -1,9 +1,5 @@
 package com.dev.rest.services;
 
-import java.util.ArrayList;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.dev.rest.dao.employeeDao;
@@ -15,28 +11,12 @@ public class AddEmployeeService implements employeeService {
 	employeeDao employeeDao;
 
 	@Override
-	public boolean addEmployee(Employee employee) {
-		if (employeeDao.save(employee) != null)
-			return true;
+	public boolean saveEmployeeToDB(Employee employee) throws Exception {
+		if (employeeDao.existsById(employee.getId()))
+			throw new IllegalArgumentException("Duplicate Employee ID!" + employee.toString());
+		else if(employeeDao.save(employee).equals(null))
+			throw new Exception("Failed to save Employee!");
 		else
-			return false;
+			return true;
 	}
-	
-	@Override
-	public ArrayList<Employee> addEmployees(JSONArray jsonArray) throws JSONException {
-		ArrayList<Employee> employeesArray = new ArrayList<>();
-		JSONObject jsonObject;
-		Employee employee;
-		
-		for (int i = 0; i < jsonArray.length(); i++) {
-			employee = new Employee();
-			jsonObject = jsonArray.getJSONObject(i);
-			employee.setName(jsonObject.getString("name"));
-			employee.setAge(jsonObject.getInt("age"));
-			employeesArray.add(employee);
-			addEmployee(employee);
-		}
-		return employeesArray;
-	}
-	
 }

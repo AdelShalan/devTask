@@ -5,22 +5,17 @@ import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Company {
 
 	@Id
-	@GeneratedValue
 	private int id;
 	@Column
 	private String name;
 	@OneToMany(cascade = CascadeType.ALL)
-	@JsonManagedReference
 	private Collection<Employee> employees = new ArrayList<>();
 
 	public Company() {
@@ -35,7 +30,7 @@ public class Company {
 		this.employees = employees;
 	}
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
