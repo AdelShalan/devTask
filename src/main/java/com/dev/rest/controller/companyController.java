@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.dev.rest.exception.ApiRequestException;
 import com.dev.rest.model.Company;
 import com.dev.rest.services.companyService;
 
@@ -16,17 +18,12 @@ public class companyController {
 	private companyService service;
 
 	@PostMapping(value = "/api/addCompany", consumes = { "application/json" })
-	public ResponseEntity<String> addCompany(@RequestBody(required = true) Company companyJson) {
+	public ResponseEntity<String> addCompany(@RequestBody(required = true) Company companyJson) throws Exception {
 		try {
-			if (service.addCompanyJSON(companyJson)) //returns false only when ALL employees already exist in DB
-				return ResponseEntity.ok("Company inserted!");
-			else
-				return ResponseEntity.badRequest().body("Employees must be unique!");
-		} catch (IllegalArgumentException duplicateIdException) {
-			return ResponseEntity.badRequest().body(duplicateIdException.getMessage());
-		} catch (Exception genericException) {
-			genericException.printStackTrace();
-			return ResponseEntity.badRequest().body("Failed to insert Company!");
+			service.addCompanyJSON(companyJson);
+			return ResponseEntity.ok("Company inserted!");
+		} catch (ApiRequestException e) {
+			throw e;
 		}
 	}
 
