@@ -1,5 +1,7 @@
 package com.dev.rest.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +20,13 @@ public class companyController {
 	private companyService service;
 
 	@PostMapping(value = "/api/addCompany", consumes = { "application/json" })
-	public ResponseEntity<String> addCompany(@RequestBody(required = true) Company companyJson) throws Exception {
+	public ResponseEntity<String> addCompany(@Valid @RequestBody(required = true) Company companyJson) {
 		try {
 			service.addCompanyJSON(companyJson);
 			return ResponseEntity.ok("Company inserted!");
 		} catch (ApiRequestException e) {
+			throw e;
+		} catch (Exception e) {
 			throw e;
 		}
 	}

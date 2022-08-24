@@ -4,13 +4,13 @@ import java.time.ZonedDateTime;
 
 import org.springframework.http.HttpStatus;
 
-public class DuplicateIdException {
+public class CustomException {
 	private final String message;
 	private final Throwable throwable;
 	private final HttpStatus httpStatus;
 	private final ZonedDateTime timestamp;
 	
-	public DuplicateIdException(String message, Throwable throwable, HttpStatus httpStatus, ZonedDateTime timestamp) {
+	public CustomException(String message, Throwable throwable, HttpStatus httpStatus, ZonedDateTime timestamp) {
 		this.message = message;
 		this.throwable = throwable;
 		this.httpStatus = httpStatus;

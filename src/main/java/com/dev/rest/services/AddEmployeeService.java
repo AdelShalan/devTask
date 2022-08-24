@@ -12,12 +12,10 @@ public class AddEmployeeService implements employeeService {
 	employeeDao employeeDao;
 
 	@Override
-	public boolean saveEmployeeToDB(Employee employee) throws Exception {
+	public Employee saveEmployeeToDB(Employee employee) {
 		if (employeeDao.existsById(employee.getId()))
 			throw new ApiRequestException("Duplicate Employee ID! - ID = " + employee.getId());
-		else if(employeeDao.save(employee).equals(null))
-			throw new ApiRequestException("Failed to save Employee!");
-		else
-			return true;
+
+		return employeeDao.save(employee);
 	}
 }

@@ -5,6 +5,10 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -13,45 +17,60 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.dev.rest.controller.companyController;
 import com.dev.rest.model.Company;
 import com.dev.rest.model.Employee;
-import com.dev.rest.services.AddGetCompanyService;
+import com.dev.rest.services.CompanyServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.dev.rest.services.AddEmployeeService;
+import com.dev.rest.services.companyService;;
 
+@SpringBootTest
+@AutoConfigureMockMvc
 public class CompanyControllerUnitTest {
-	private AddEmployeeService empService = Mockito.mock(AddEmployeeService.class, Mockito.RETURNS_DEEP_STUBS);
-	private AddGetCompanyService service = Mockito.mock(AddGetCompanyService.class, Mockito.RETURNS_DEEP_STUBS);
-	private String requestString;
+	@Autowired
+	private AddEmployeeService employeeService;
+	@Autowired
+	private CompanyServiceImpl addGetCompanyService;
+	@Autowired
 	private MockMvc mockMvc;
+
+	public static String asJsonString(final Object obj) {
+		try {
+			final ObjectMapper mapper = new ObjectMapper();
+			final String jsonContent = mapper.writeValueAsString(obj);
+			return jsonContent;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Before
 	public void setUp() throws Exception {
-		this.mockMvc = MockMvcBuilders.standaloneSetup(new companyController(service)).build();
+		//this.mockMvc = MockMvcBuilders.standaloneSetup(new companyController()).build();
 	}
 
 	@Test
 	public void testAddCompany() throws Exception {
-		JSONArray empJson = new JSONArray();
-		JSONObject o = new JSONObject();
 		Company c = new Company();
 		Employee e = new Employee();
 
 		// create json object of employee and to json array
-		o.put("id", 1);
-		o.put("name", "Jacky");
-		o.put("age", 22);
-		empJson.put(o);
+		e.setId(1);
+		e.setAge(25);
+		e.setName("Ahmed");
+		c.getEmployees().add(e);
 		// create another json object of employee and to json array
-		o = new JSONObject();
-		o.put("id", 3);
-		o.put("name", "John");
-		o.put("age", 33);
-		empJson.put(o);
+		e = new Employee();
+		e.setId(2);
+		e.setAge(38);
+		e.setName("Aya");
+		c.getEmployees().add(e);
 
-		requestString = new JSONObject().put("company name", "").put("employees", empJson).toString();
+		c.setId(1);
+		c.setName("New Company");
 
-		Mockito.when(empService.saveEmployeeToDB(e)).thenReturn(true);
-		Mockito.when(service.saveCompanyToDB(c)).thenReturn(true);
+		Mockito.when(employeeService.saveEmployeeToDB(e)).thenReturn(true);
+		Mockito.when(addGetCompanyService.saveCompanyToDB(c)).thenReturn(true);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/addCompany").contentType(MediaType.APPLICATION_JSON)
-				.content(requestString)).andExpect(MockMvcResultMatchers.status().isOk());
+				.content(asJsonString(c))).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
@@ -61,19 +80,19 @@ public class CompanyControllerUnitTest {
 		c.setId(2);
 		c.setName("company x");
 		// create first employee and add to company employees
-		Employee e = new Employee(c);
+		Employee e = new Employee();
 		e.setId(1);
 		e.setAge(22);
 		e.setName("Jacky");
 		c.getEmployees().add(e);
 		// create second employee and add to company employees
-		e = new Employee(c);
+		e = new Employee();
 		e.setId(3);
 		e.setAge(36);
 		e.setName("Adel");
 		c.getEmployees().add(e);
 		// mock the DA service
-		Mockito.when(service.getCompanyById(2)).thenReturn(c);
+		Mockito.when(addGetCompanyService.getCompanyById(2)).thenReturn(c);
 		// mpck a get request
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/getCompany").param("companyId", "2"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(

@@ -1,12 +1,14 @@
 package com.dev.rest.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Company {
@@ -14,19 +16,20 @@ public class Company {
 	@Id
 	private int id;
 	@Column
+	@NotBlank(message = "Company name is mandatory")
 	private String name;
 	@OneToMany(cascade = CascadeType.ALL)
-	private Collection<Employee> employees = new ArrayList<>();
+	private List<Employee> employees = new ArrayList<>();
 
 	public Company() {
 
 	}
 
-	public Collection<Employee> getEmployees() {
+	public List<Employee> getEmployees() {
 		return employees;
 	}
 
-	public void setEmployees(Collection<Employee> employees) {
+	public void setEmployees(List<Employee> employees) {
 		this.employees = employees;
 	}
 
