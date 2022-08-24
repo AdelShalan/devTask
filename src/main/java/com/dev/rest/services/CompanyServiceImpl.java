@@ -11,21 +11,11 @@ public class CompanyServiceImpl implements companyService {
 	@Autowired
 	companyDao companyDao;
 
-	public Company saveCompanyToDB(Company company) throws ApiRequestException {
-		if (companyDao.existsById(company.getId()))
-			throw new ApiRequestException("Duplicate company ID!");
-		return companyDao.save(company);
-	}
-
 	@Override
-	public Company addCompanyJSON(Company companyJson) {
-		try {
-			return saveCompanyToDB(companyJson);
-		} catch (ApiRequestException e) {
-			throw e;
-		} catch (Exception e) {
-			throw e;
-		}
+	public Company saveCompanyToDB(Company companyJson) throws ApiRequestException, Exception {
+		if (companyDao.existsById(companyJson.getId()))
+			throw new ApiRequestException("Duplicate company ID!");
+		return companyDao.save(companyJson);
 	}
 
 	@Override
