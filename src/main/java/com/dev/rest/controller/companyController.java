@@ -20,15 +20,12 @@ public class companyController {
 	private companyService service;
 
 	@PostMapping(value = "/api/addCompany", consumes = { "application/json" })
-	public ResponseEntity<String> addCompany(@Valid @RequestBody(required = true) Company companyJson) throws Exception {
-		try {
-			service.saveCompanyToDB(companyJson);
-			return ResponseEntity.ok("Company inserted!");
-		} catch (ApiRequestException e) {
-			throw e;
-		} catch (Exception e) {
-			throw e;
-		}
+	public ResponseEntity<String> addCompany(@Valid @RequestBody(required = true) Company companyJson)
+			throws ApiRequestException, Exception {
+
+		service.saveCompanyToDB(companyJson);
+		return ResponseEntity.ok("Company inserted!");
+
 	}
 
 	@GetMapping("/api/getCompany")
